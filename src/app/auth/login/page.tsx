@@ -1,6 +1,6 @@
-import Login from "@/modules/auth/login";
+import LoginForm from "@/modules/auth/login";
 
-export default function Home() {
+export default function LoginPage() {
   const colCount: number[] = [];
   for (let i = 0; i < 100; i++) {
     colCount.push(i);
@@ -9,7 +9,7 @@ export default function Home() {
   for (let i = 0; i < 10; i++) {
     rowCount.push(i);
   }
-  console.log({ gridCount: colCount });
+
   return (
     <main className="relative mx-auto overflow-x-hidden">
       <div className="absolute h-1/2 w-full bg-gradient-to-b from-emerald-200 to-transparent"></div>
@@ -29,7 +29,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-      <Login />
+      <LoginForm />
     </main>
   );
 }

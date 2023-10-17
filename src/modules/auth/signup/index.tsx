@@ -2,9 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { emailPasswordSignIn } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { emailPasswordSignUp } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -28,10 +27,7 @@ const formSchema = z.object({
   }),
 });
 
-const CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_DOMAIN;
-
-export function LoginForm() {
-  const { push } = useRouter();
+export function SignupForm() {
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,13 +42,23 @@ export function LoginForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-    const res = await emailPasswordSignIn({
-      formFields: [
-        { id: "email", value: values.email },
-        { id: "password", value: values.password },
-      ],
-    });
-    console.log({ res });
+    try {
+      const res = await emailPasswordSignUp({
+        formFields: [
+          { id: "email", value: values.email },
+          { id: "password", value: values.password },
+        ],
+      });
+      console.log(res);
+    } catch (err: any) {
+      if (err.isSuperTokensGeneralError === true) {
+        // this may be a custom error message sent from the API by you.
+        window.alert(err.message);
+      } else {
+        console.error({ err });
+        window.alert("Oops! Something went wrong.");
+      }
+    }
   };
 
   return (
@@ -60,9 +66,9 @@ export function LoginForm() {
       <div className="rounded-lg shadow-2xl shadow-gray-300">
         <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-12 shadow-inner shadow-white backdrop-blur-sm">
           <section className="relative mx-auto space-y-1 pb-2">
-            <h1 className="text-2xl font-medium">Welcome back to cashr.</h1>
+            <h1 className="text-2xl font-medium">Sign up to cashr.</h1>
             <p className="text-sm text-stone-500">
-              Log in using a social provider, or through email and password.
+              Sign up using a social provider, or through email and password.
             </p>
           </section>
           <SocialSignin />
@@ -118,24 +124,18 @@ export function LoginForm() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Log in
+                Sign up
               </Button>
             </form>
           </Form>
-          <div className="flex w-full flex-row justify-between text-xs">
-            <Link
-              href="/auth/forgot-password"
-              className="text-emerald-700 hover:text-emerald-800"
-            >
-              Forgot your password?
-            </Link>
+          <div className="w-full text-xs">
             <div>
-              No account yet?{" "}
+              Already have an account?{" "}
               <Link
-                href="/auth/signup"
+                href="/auth/login"
                 className="text-emerald-700 hover:text-emerald-800"
               >
-                Sign up
+                Log in
               </Link>
             </div>
           </div>
@@ -145,4 +145,4 @@ export function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default SignupForm;

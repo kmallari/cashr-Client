@@ -8,5 +8,5 @@ export const appInfo = {
   apiDomain: PUBLIC_CLIENT_DOMAIN,
   websiteDomain: PUBLIC_CLIENT_DOMAIN,
   apiBasePath: "/api/auth",
-  websiteBasePath: "/login",
+  websiteBasePath: "/auth/login",
 };

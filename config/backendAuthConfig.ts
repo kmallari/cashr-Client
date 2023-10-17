@@ -20,8 +20,6 @@ export const backendAuthConfig = (): TypeInput => {
     recipeList: [
       ThirdPartyEmailPasswordNode.init({
         providers: [
-          // We have provided you with development keys which you can use for testing.
-          // IMPORTANT: Please replace them with your own OAuth keys for production use.
           {
             config: {
               thirdPartyId: "google",

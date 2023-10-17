@@ -8,8 +8,6 @@ import {
 } from "supertokens-auth-react/recipe/session";
 import ThirdPartyEmailPassword from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
-import styles from "../app/styles/Home.module.css";
-
 function ProtectedPage() {
   const session = useSessionContext();
 
@@ -32,10 +30,8 @@ function ProtectedPage() {
 
   return (
     <>
-      <p className={styles.description}>
-        UserId on the client-side: {session.userId}
-      </p>
-      <p className={styles.description}>
+      <p>UserId on the client-side: {session.userId}</p>
+      <p>
         Access token payload count:
         {JSON.stringify(session.accessTokenPayload.count ?? 0)}
       </p>
