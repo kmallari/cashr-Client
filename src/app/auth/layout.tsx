@@ -1,9 +1,14 @@
-import SupertokesWrapper from "@/modules/auth/common/supertokesWrapper";
+import SSRRedirect from "@/modules/auth/common/ssrRedirect";
+import SupertokensWrapper from "@/modules/auth/common/supertokensWrapper";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <SupertokesWrapper>{children}</SupertokesWrapper>;
+  return (
+    <SupertokensWrapper>
+      <SSRRedirect from="AUTH">{children}</SSRRedirect>
+    </SupertokensWrapper>
+  );
 }

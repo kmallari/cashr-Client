@@ -17,7 +17,7 @@ function ProtectedPage() {
   }
 
   async function fetchUserData() {
-    const res = await fetch("/api/user");
+    const res = await fetch("http://localhost:8080/sessioninfo");
     if (res.status === 200) {
       const json = await res.json();
       alert(JSON.stringify(json));

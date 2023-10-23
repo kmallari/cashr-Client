@@ -2,7 +2,7 @@ import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Session, { SessionContainer } from "supertokens-node/recipe/session";
 
-import { ensureSuperTokensInit } from "@/config/backendAuthConfig";
+import { ensureSuperTokensInit } from "@/config/auth/backendAuthConfig";
 
 ensureSuperTokensInit();
 

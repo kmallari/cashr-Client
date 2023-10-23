@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import SocialSignin from "@/modules/auth/common/socialSignin";
 
 const formSchema = z.object({
@@ -28,11 +29,10 @@ const formSchema = z.object({
   }),
 });
 
-const CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_DOMAIN;
-
 export function LoginForm() {
   const { push } = useRouter();
-  // 1. Define your form.
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,10 +41,7 @@ export function LoginForm() {
     },
   });
 
-  // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
     const res = await emailPasswordSignIn({
       formFields: [
@@ -52,7 +49,21 @@ export function LoginForm() {
         { id: "password", value: values.password },
       ],
     });
-    console.log({ res });
+
+    if (res.status === "OK") {
+      await push("/dashboard");
+    } else if (res.status === "WRONG_CREDENTIALS_ERROR") {
+      form.setError("password", {
+        type: "manual",
+        message: "Invalid credentials.",
+      });
+      toast({
+        title: "Invalid credentials",
+        description:
+          "The email and password you entered did not match. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -60,12 +71,12 @@ export function LoginForm() {
       <div className="rounded-lg shadow-2xl shadow-gray-300">
         <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-12 shadow-inner shadow-white backdrop-blur-sm">
           <section className="relative mx-auto space-y-1 pb-2">
-            <h1 className="text-2xl font-medium">Welcome back to cashr.</h1>
+            <h1 className="text-2xl font-medium">Welcome back to Website.</h1>
             <p className="text-sm text-stone-500">
               Log in using a social provider, or through email and password.
             </p>
           </section>
-          <SocialSignin />
+          <SocialSignin disabled={form.formState.isSubmitting} />
           <div className="flex items-center">
             <hr className="w-full" />
             <span className="mx-4 text-sm text-gray-400">or</span>
@@ -105,7 +116,7 @@ export function LoginForm() {
                     <FormControl>
                       <Input
                         className={
-                          form.formState.errors.email &&
+                          form.formState.errors.password &&
                           "border-destructive focus-visible:ring-destructive"
                         }
                         type="password"
@@ -117,14 +128,19 @@ export function LoginForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+                loading={form.formState.isSubmitting}
+              >
                 Log in
               </Button>
             </form>
           </Form>
           <div className="flex w-full flex-row justify-between text-xs">
             <Link
-              href="/auth/forgot-password"
+              href="/auth/reset-password"
               className="text-emerald-700 hover:text-emerald-800"
             >
               Forgot your password?

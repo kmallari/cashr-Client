@@ -9,7 +9,11 @@ import {
 import { Button } from "@/components/ui/button";
 const CLIENT_URL = process.env.NEXT_PUBLIC_CLIENT_DOMAIN;
 
-const SocialSignin: FC = () => {
+type SocialSigninProps = {
+  disabled?: boolean;
+};
+
+const SocialSignin: FC<SocialSigninProps> = ({ disabled }) => {
   const { push } = useRouter();
 
   const socialSignin = async (type: "github" | "google") => {
@@ -26,6 +30,7 @@ const SocialSignin: FC = () => {
           e.preventDefault();
           socialSignin("google");
         }}
+        disabled={disabled}
         type="button"
         variant="outline"
         className="flex w-full flex-row items-center justify-between gap-4 hover:bg-stone-900 hover:text-stone-50"
@@ -41,6 +46,7 @@ const SocialSignin: FC = () => {
           e.preventDefault();
           socialSignin("github");
         }}
+        disabled={disabled}
         type="button"
         variant="outline"
         className="flex w-full flex-row items-center justify-between gap-4 hover:bg-stone-900 hover:text-stone-50"

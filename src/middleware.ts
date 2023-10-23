@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { SessionContainer } from "supertokens-node/recipe/session";
 
 import { withSession } from "@/app/sessionHandlers";
-import { ensureSuperTokensInit } from "@/config/backendAuthConfig";
+import { ensureSuperTokensInit } from "@/config/auth/backendAuthConfig";
 
 export async function middleware(
   request: NextRequest & { session?: SessionContainer },
