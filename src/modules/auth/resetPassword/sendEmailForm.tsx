@@ -29,7 +29,7 @@ const ForgotPasswordForm: FC = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "kmallari21stlit@gmail.com",
+      email: "",
     },
   });
 
