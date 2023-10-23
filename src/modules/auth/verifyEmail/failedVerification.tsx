@@ -27,7 +27,6 @@ const FailedVerification: FC = () => {
         <Button
           onClick={async () => {
             const res = await sendVerificationEmail();
-            console.log(res);
           }}
           className="text-sm"
         >

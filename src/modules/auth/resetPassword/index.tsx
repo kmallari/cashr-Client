@@ -33,8 +33,6 @@ const ResetPasswordForm: FC = () => {
     const res = await submitNewPassword({
       formFields: [{ id: "password", value: values.password }],
     });
-
-    console.log(res);
   };
 
   const [showPassword, setShowPassword] = useState(false);

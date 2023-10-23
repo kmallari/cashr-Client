@@ -14,7 +14,6 @@ const ValidateVerificationToken: FC = () => {
 
   useEffect(() => {
     verifyEmail().then((res) => {
-      console.log({ res });
       if (res.status === "OK") {
         setIsSuccessful(1);
       } else {

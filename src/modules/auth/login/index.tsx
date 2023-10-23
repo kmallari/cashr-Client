@@ -42,7 +42,6 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     const res = await emailPasswordSignIn({
       formFields: [
         { id: "email", value: values.email },
