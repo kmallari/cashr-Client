@@ -34,22 +34,38 @@ const ForgotPasswordForm: FC = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await sendPasswordResetEmail({
-      formFields: [{ id: "email", value: values.email }],
-    });
-
-    if (res.status === "OK") {
-      toast({
-        title: "Password reset link",
-        description:
-          "The email with the password reset link has been sent if an account with that email exists.",
-        duration: 5000,
+    try {
+      const res = await sendPasswordResetEmail({
+        formFields: [{ id: "email", value: values.email }],
       });
-    } else {
+
+      if (res.status === "OK") {
+        toast({
+          title: "Password reset link",
+          description:
+            "The email with the password reset link has been sent if an account with that email exists.",
+          duration: 5000,
+        });
+      } else if (res.status === "FIELD_ERROR") {
+        const formFields = res.formFields;
+        formFields.forEach((field) => {
+          form.setError(field.id as "email", {
+            type: "manual",
+            message: field.error,
+          });
+        });
+      } else if (res.status === "PASSWORD_RESET_NOT_ALLOWED") {
+        toast({
+          title: "Password reset not allowed",
+          description: "Password reset is not allowed in this mode.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error(err);
       toast({
         title: "Error",
-        description: "An error occurred. Please try again.",
-        duration: 5000,
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }

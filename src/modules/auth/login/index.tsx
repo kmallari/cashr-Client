@@ -42,24 +42,33 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await emailPasswordSignIn({
-      formFields: [
-        { id: "email", value: values.email },
-        { id: "password", value: values.password },
-      ],
-    });
-
-    if (res.status === "OK") {
-      await push("/dashboard");
-    } else if (res.status === "WRONG_CREDENTIALS_ERROR") {
-      form.setError("password", {
-        type: "manual",
-        message: "Invalid credentials.",
+    try {
+      const res = await emailPasswordSignIn({
+        formFields: [
+          { id: "email", value: values.email },
+          { id: "password", value: values.password },
+        ],
       });
+
+      if (res.status === "OK") {
+        await push("/dashboard");
+      } else if (res.status === "WRONG_CREDENTIALS_ERROR") {
+        form.setError("password", {
+          type: "manual",
+          message: "Invalid credentials.",
+        });
+        toast({
+          title: "Invalid credentials",
+          description:
+            "The email and password you entered did not match. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error(err);
       toast({
-        title: "Invalid credentials",
-        description:
-          "The email and password you entered did not match. Please try again.",
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     }
