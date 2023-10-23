@@ -44,6 +44,7 @@ const SocialCallbackHandler: FC = () => {
 
   useEffect(() => {
     handleGoogleCallback();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <></>;

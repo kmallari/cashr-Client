@@ -75,7 +75,7 @@ const ForgotPasswordForm: FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="mx-auto flex w-full flex-row items-center justify-between gap-2 pt-2"
+        className="mx-auto flex w-full flex-col items-start justify-between gap-2 pt-2 md:flex-row"
       >
         <FormField
           control={form.control}
@@ -98,7 +98,7 @@ const ForgotPasswordForm: FC = () => {
         />
         <Button
           type="submit"
-          className="w-1/2"
+          className="w-full md:w-1/2"
           disabled={form.formState.isSubmitting}
           loading={form.formState.isSubmitting}
         >

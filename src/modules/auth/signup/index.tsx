@@ -91,7 +91,7 @@ export function SignupForm() {
   return (
     <div className="relative mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4">
       <div className="rounded-lg shadow-2xl shadow-gray-300">
-        <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-12 shadow-inner shadow-white backdrop-blur-sm">
+        <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-4 shadow-inner shadow-white backdrop-blur-sm sm:p-8 md:p-12">
           <section className="relative mx-auto space-y-1 pb-2">
             <h1 className="text-2xl font-medium">Sign up to Website.</h1>
             <p className="text-sm text-stone-500">

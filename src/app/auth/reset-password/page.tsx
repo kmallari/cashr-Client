@@ -1,9 +1,7 @@
 "use client";
 
 import React, { type FC } from "react";
-import {
-  getResetPasswordTokenFromURL,
-} from "supertokens-auth-react/recipe/thirdpartyemailpassword";
+import { getResetPasswordTokenFromURL } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 import BackToLogin from "@/modules/auth/common/backToLogin";
 import ResetPasswordForm from "@/modules/auth/resetPassword";
@@ -34,7 +32,7 @@ const ForgotPassword: FC = () => {
       <GridGradientBg className="from-blue-300" />
       <div className="relative mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4">
         <div className="rounded-lg shadow-2xl shadow-gray-300">
-          <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-12 shadow-inner shadow-white backdrop-blur-sm">
+          <div className="flex h-fit w-full flex-col gap-6 rounded-lg border border-stone-200 bg-gradient-to-t from-stone-50 to-white/20 p-4 shadow-inner shadow-white backdrop-blur-sm sm:p-8 md:p-12">
             {display}
           </div>
         </div>
