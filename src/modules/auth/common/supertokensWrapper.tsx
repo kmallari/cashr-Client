@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { ReactNode } from "react";
 import { SuperTokensWrapper } from "supertokens-auth-react";
 import SuperTokensReact from "supertokens-auth-react";
 
@@ -14,7 +14,7 @@ if (typeof window !== "undefined") {
   SuperTokensReact.init(frontendAuthConfig());
 }
 
-const Providers: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+const Providers = ({ children }: { children: ReactNode }) => {
   setRouter(useRouter(), usePathname() || window.location.pathname);
 
   return <SuperTokensWrapper>{children}</SuperTokensWrapper>;

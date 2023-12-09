@@ -1,4 +1,4 @@
-import SSRRedirect from "@/modules/auth/common/ssrRedirect";
+import SSRRouteGuard from "@/modules/auth/common/ssrRouteGuard";
 import SupertokensWrapper from "@/modules/auth/common/supertokensWrapper";
 
 export default function RootLayout({
@@ -8,7 +8,7 @@ export default function RootLayout({
 }) {
   return (
     <SupertokensWrapper>
-      <SSRRedirect from="AUTH">{children}</SSRRedirect>
+      <SSRRouteGuard from="AUTH">{children}</SSRRouteGuard>
     </SupertokensWrapper>
   );
 }

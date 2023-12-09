@@ -1,12 +1,14 @@
 "use client";
 
+import { LineWobble } from "@uiball/loaders";
 import { useRouter } from "next/navigation";
-import React, { type FC, useEffect } from "react";
+import React, { type FC, useEffect, useState } from "react";
 import { thirdPartySignInAndUp } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 const SocialCallbackHandler: FC = () => {
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const handleGoogleCallback = async () => {
+  const handleCallback = async () => {
     try {
       const response = await thirdPartySignInAndUp();
       if (response.status === "OK") {
@@ -43,11 +45,17 @@ const SocialCallbackHandler: FC = () => {
   };
 
   useEffect(() => {
-    handleGoogleCallback();
+    (async function cb() {
+      await handleCallback();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <></>;
+  return (
+    <main className="flex h-screen w-full items-center justify-center">
+      {loading && <LineWobble />}
+    </main>
+  );
 };
 
 export default SocialCallbackHandler;
