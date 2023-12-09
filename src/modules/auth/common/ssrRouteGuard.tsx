@@ -11,19 +11,19 @@ type SSRRouteGuardProps = {
 };
 
 const SSRRouteGuard: FC<SSRRouteGuardProps> = async ({ children, from }) => {
-  // const { session } = await getSSRSession();
-  // if (session && from === "AUTH") {
-  //   const isVerified = await isEmailVerified(
-  //     new RecipeUserId(session?.getUserId()),
-  //   );
-  //   if (!isVerified) {
-  //     redirect("/auth/verify-email");
-  //   } else {
-  //     redirect("/dashboard");
-  //   }
-  // } else if (!session && from === "DASHBOARD") {
-  //   redirect("/auth/login");
-  // }
+  const { session } = await getSSRSession();
+  if (session && from === "AUTH") {
+    const isVerified = await isEmailVerified(
+      new RecipeUserId(session?.getUserId()),
+    );
+    if (!isVerified) {
+      redirect("/auth/verify-email");
+    } else {
+      redirect("/dashboard");
+    }
+  } else if (!session && from === "DASHBOARD") {
+    redirect("/auth/login");
+  }
   return <>{children}</>;
 };
 
