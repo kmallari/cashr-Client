@@ -40,9 +40,9 @@ export const frontendAuthConfig = (): Parameters<
       ...orig,
       location: {
         ...orig.location,
-        getPathName: () => routerInfo.pathName!,
-        assign: (url) => routerInfo.router!.push(url.toString()),
-        setHref: (url) => routerInfo.router!.push(url.toString()),
+        getPathName: () => routerInfo.pathName || "",
+        assign: (url) => routerInfo.router?.push(url.toString()),
+        setHref: (url) => routerInfo.router?.push(url.toString()),
       },
     }),
   };

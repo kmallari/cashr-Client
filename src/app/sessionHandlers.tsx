@@ -2,9 +2,9 @@ import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Session, { SessionContainer } from "supertokens-node/recipe/session";
 
-import { ensureSuperTokensInit } from "@/config/auth/backendAuthConfig";
+// import { ensureSuperTokensInit } from "@/config/auth/backendAuthConfig";
 
-ensureSuperTokensInit();
+// ensureSuperTokensInit();
 
 export async function getSSRSession(req?: NextRequest): Promise<{
   session: SessionContainer | undefined;
@@ -54,7 +54,7 @@ export function updateSessionInResponse(
   session: SessionContainer,
   response?: NextResponse,
 ) {
-  let tokens = session.getAllSessionTokensDangerously();
+  const tokens = session.getAllSessionTokensDangerously();
   if (tokens.accessAndFrontTokenUpdated) {
     const accessTokenCookie = {
       name: "sAccessToken",
@@ -78,11 +78,11 @@ export async function withSession(
   request: NextRequest,
   handler: (session: SessionContainer | undefined) => Promise<NextResponse>,
 ) {
-  let { session, resp: stResponse } = await getSSRSession(request);
+  const { session, resp: stResponse } = await getSSRSession(request);
   if (stResponse) {
     return stResponse;
   }
-  let userResponse = await handler(session);
+  const userResponse = await handler(session);
 
   if (session) {
     updateSessionInResponse(session, userResponse);

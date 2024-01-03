@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import { getEmailVerificationTokenFromURL } from "supertokens-auth-react/recipe/emailverification";
 import { useSessionContext } from "supertokens-auth-react/recipe/session";
 
-import NoSession from "@/modules/auth/verifyEmail/noSession";
-import ValidateVerificationToken from "@/modules/auth/verifyEmail/validateVerificationToken";
-import WaitForEmail from "@/modules/auth/verifyEmail/waitForEmail";
-import FullScreenLoader from "@/modules/common/fullScreenLoader";
+import NoSession from "@/modules/auth/VerifyEmail/NoSession";
+import ValidateVerificationToken from "@/modules/auth/VerifyEmail/ValidateVerificationToken";
+import WaitForEmail from "@/modules/auth/VerifyEmail/WaitForEmail";
+import FullScreenLoader from "@/modules/common/FullScreenLoader";
 
 const VerifyEmailPage = () => {
   const session = useSessionContext();

@@ -1,43 +1,19 @@
-import dayjs from "dayjs";
 import React, { type FC } from "react";
 
-import { ClientCompWithRequiredSession } from "@/modules/auth/common/protectedPage";
-import { ServerCompWithSessionInfo } from "@/modules/auth/common/serverCompWithSessionInfo";
-import NewExpenseForm from "@/modules/expenses/NewExpenseForm";
-import { columns, Payment } from "@/modules/expenses/table/columns";
-import { DataTable } from "@/modules/expenses/table/data-table";
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  const now = Date.now();
-  const date = dayjs(now).format("MM/DD/YYYY");
-  return [
-    {
-      id: "728ed52f",
-      date: date,
-      category: "Phone",
-      description: "iPhone payment",
-      amount: 100,
-    },
-    {
-      id: "728ed52x",
-      date: date,
-      category: "Skin Hygiene",
-      description:
-        "Went to skin desyre and bought some products. Also got a facial and cleaning. Went to skin desyre and bought some products. Also got a facial and cleaning. Went to skin desyre and bought some products. Also got a facial and cleaning.",
-      amount: 100,
-    },
-  ];
-}
+import { getCategories } from "@/modules/dashboard/actions/category";
+import { getTransactions } from "@/modules/dashboard/actions/transactions";
+import NewTransactionForm from "@/modules/dashboard/transaction/NewTransactionForm";
+import { columns } from "@/modules/dashboard/transaction/table/columns";
+import { DataTable } from "@/modules/dashboard/transaction/table/data-table";
 
 const Dashboard: FC = async () => {
-  const data = await getData();
+  const categories = await getCategories();
+  const transactions = await getTransactions();
+
   return (
     <main className="w-full space-y-2">
-      <ServerCompWithSessionInfo />
-      <ClientCompWithRequiredSession />
-
-      <NewExpenseForm />
-      <DataTable columns={columns} data={data} />
+      <NewTransactionForm categories={categories} />
+      <DataTable columns={columns} data={transactions} />
     </main>
   );
 };

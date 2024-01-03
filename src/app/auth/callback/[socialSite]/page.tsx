@@ -2,12 +2,12 @@
 
 import { LineWobble } from "@uiball/loaders";
 import { useRouter } from "next/navigation";
-import React, { type FC, useEffect, useState } from "react";
+import React, { type FC, useEffect } from "react";
 import { thirdPartySignInAndUp } from "supertokens-auth-react/recipe/thirdpartyemailpassword";
 
 const SocialCallbackHandler: FC = () => {
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
   const handleCallback = async () => {
     try {
       const response = await thirdPartySignInAndUp();
@@ -28,18 +28,19 @@ const SocialCallbackHandler: FC = () => {
         // will fail.
 
         // As a hack to solve this, you can override the backend functions to create a fake email for the user.
-
         console.error(
           "No email provided by social login. Please use another form of login",
         );
         router.push("/auth/login"); // redirect back to login page
       }
-    } catch (err: any) {
-      if (err.isSuperTokensGeneralError === true) {
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("Error: ", err.message);
+        //} else if (err.isSuperTokensGeneralError) {
         // this may be a custom error message sent from the API by you.
-        console.error(err.message);
+        //console.error(err.message);
       } else {
-        console.error("Oops! Something went wrong.");
+        console.error("Oops! An unexpected error occured.");
       }
     }
   };
@@ -53,7 +54,7 @@ const SocialCallbackHandler: FC = () => {
 
   return (
     <main className="flex h-screen w-full items-center justify-center">
-      {loading && <LineWobble />}
+      <LineWobble />
     </main>
   );
 };

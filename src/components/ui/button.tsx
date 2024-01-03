@@ -1,9 +1,9 @@
 import { Slot } from "@radix-ui/react-slot";
-import { LineWobble } from "@uiball/loaders";
-import { cva, type VariantProps } from "class-variance-authority";
+import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/tw-merge";
+import Spinner from "@/modules/common/Spinner";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -39,18 +39,40 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
+  isError?: boolean;
+  loadingClassName?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      loading,
+      asChild = false,
+      isError,
+      loadingClassName,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          isError &&
+            "border-destructive placeholder:text-destructive focus-visible:ring-destructive",
+        )}
         ref={ref}
         {...props}
       >
-        {loading ? <LineWobble color="#FFFFFF" /> : props.children}
+        {loading ? (
+          <Spinner className={cn("h-6 w-6", loadingClassName)} />
+        ) : (
+          props.children
+        )}
       </Comp>
     );
   },

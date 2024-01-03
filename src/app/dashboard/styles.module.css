@@ -1,0 +1,36 @@
+.trash-icon-even {
+  animation-name: keyframes1;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 10%;
+}
+
+.trash-icon-odd {
+  animation-name: keyframes2;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  transform-origin: 30% 5%;
+}
+
+@keyframes keyframes1 {
+  0% {
+    transform: rotate(-2deg);
+    animation-timing-function: ease-in;
+  }
+
+  50% {
+    transform: rotate(3deg);
+    animation-timing-function: ease-out;
+  }
+}
+
+@keyframes keyframes2 {
+  0% {
+    transform: rotate(2deg);
+    animation-timing-function: ease-in;
+  }
+
+  50% {
+    transform: rotate(-3deg);
+    animation-timing-function: ease-out;
+  }
+}

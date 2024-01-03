@@ -1,7 +1,7 @@
 import React, { type FC } from "react";
 
-import SignUpForm from "@/modules/auth/signup";
-import GridGradientBg from "@/modules/common/gridGradientBg";
+import SignUpForm from "@/modules/auth/SignUp";
+import GridGradientBg from "@/modules/common/GridGradientBg";
 
 const SignUp: FC = () => {
   return (

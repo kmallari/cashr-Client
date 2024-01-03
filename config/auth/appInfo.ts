@@ -5,7 +5,7 @@ const PUBLIC_CLIENT_DOMAIN =
 
 export const appInfo = {
   appName: "website",
-  apiDomain: PUBLIC_API_DOMAIN, // change to client domain if you want to just use NextJS
+  apiDomain: PUBLIC_API_DOMAIN,
   websiteDomain: PUBLIC_CLIENT_DOMAIN,
   apiBasePath: "/auth",
   websiteBasePath: "/auth",

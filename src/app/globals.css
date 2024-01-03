@@ -63,6 +63,14 @@
     --border: 12 6.5% 15.1%;
     --input: 12 6.5% 15.1%;
     --ring: 24 5.7% 82.9%;
+
+    em-emoji-picker {
+      --rgb-background: 12, 10, 9;
+      border: 1px solid hsl(12 6.5% 15.1%);
+      --rgb-accent: 16 185 129;
+      --color-border: hsl(2 6.5% 15.1%);
+      --color-border-over: rgb(68, 0, 255);
+    }
   }
 }
 
