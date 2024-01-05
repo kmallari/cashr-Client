@@ -1,11 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Smile, Trash } from "lucide-react";
-import React, { useRef } from "react";
-import { UseFormReturn, useFieldArray, useForm } from "react-hook-form";
+import { Trash } from "lucide-react";
+import React from "react";
+import { UseFormReturn, useForm } from "react-hook-form";
 import z from "zod";
 
 import styles from "@/app/dashboard/styles.module.css";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Command,
@@ -31,7 +31,8 @@ import { Category, HasID } from "@/modules/dashboard/types";
 import { getRandomFloat } from "@/modules/dashboard/utils";
 
 export const EditCategoriesSchema = z.object({
-  categories: z.array(NewCategoryFormSchema.merge(HasID)),
+  toUpdate: z.array(NewCategoryFormSchema.merge(HasID)),
+  toDelete: z.array(z.string().length(36)),
 });
 
 type CategoryEditCommandProps = {
@@ -53,13 +54,9 @@ const CategoryEditCommand = ({
   const form = useForm<z.infer<typeof EditCategoriesSchema>>({
     resolver: zodResolver(EditCategoriesSchema),
     defaultValues: {
-      categories: [...categories],
+      toUpdate: [...categories],
+      toDelete: [],
     },
-  });
-
-  const { fields } = useFieldArray({
-    name: "categories",
-    control: form.control,
   });
 
   return (
@@ -83,29 +80,27 @@ const CategoryEditCommand = ({
             <ScrollArea className="h-[17rem] w-full pr-2" type="always">
               <CommandEmpty>Category not found.</CommandEmpty>
               <CommandGroup>
-                {fields.map((category, i) => (
+                {categories.map((category, i) => (
                   <CommandItem
                     key={category.id}
                     value={JSON.stringify(category)}
-                    onSelect={console.log}
-                    className="flex w-full flex-row items-center gap-1 py-1 pl-2 pr-1 aria-selected:bg-inherit"
+                    className="relative flex w-full flex-row items-center gap-1 py-1 pl-2 pr-1 aria-selected:bg-inherit"
                   >
                     <FormField
-                      key={`categories.${i}.icon`}
+                      key={`toUpdate.${i}.icon`}
                       control={form.control}
-                      name={`categories.${i}.icon`}
+                      name={`toUpdate.${i}.icon`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
                             <Popover>
-                              <PopoverTrigger>
-                                <Button
-                                  variant={"outline"}
-                                  className="flex h-6 min-h-[24px] min-w-[24px] items-center justify-center rounded-sm p-0"
-                                  type="button"
-                                >
-                                  <span>{field.value}</span>
-                                </Button>
+                              <PopoverTrigger
+                                className={cn(
+                                  buttonVariants({ variant: "outline" }),
+                                  "flex h-6 w-6 items-center justify-center rounded-sm p-0",
+                                )}
+                              >
+                                {field.value}
                               </PopoverTrigger>
                               <PopoverContent
                                 align="center"
@@ -114,7 +109,7 @@ const CategoryEditCommand = ({
                                 <EmojiPicker
                                   onClickHandler={(emoji: Emoji) => {
                                     form.setValue(
-                                      `categories.${i}.icon`,
+                                      `toUpdate.${i}.icon`,
                                       emoji.native,
                                       {
                                         shouldDirty: true,
@@ -129,14 +124,13 @@ const CategoryEditCommand = ({
                       )}
                     />
                     <FormField
-                      key={`categories.${i}.label`}
+                      key={`toUpdate.${i}.label`}
                       control={form.control}
-                      name={`categories.${i}.label`}
+                      name={`toUpdate.${i}.label`}
                       render={({ field, fieldState }) => (
                         <FormItem>
                           <FormControl>
                             <Input
-                              defaultValue={category.label}
                               className="h-6 rounded-sm px-2 focus-visible:ring-1"
                               isError={Boolean(fieldState.error)}
                               maxLength={24}
@@ -148,9 +142,9 @@ const CategoryEditCommand = ({
                     />
                     <div className="ml-auto flex flex-row gap-1">
                       <FormField
-                        key={`categories.${i}.isExpense`}
+                        key={`toUpdate.${i}.isExpense`}
                         control={form.control}
-                        name={`categories.${i}.isExpense`}
+                        name={`toUpdate.${i}.isExpense`}
                         render={({ field, formState }) => (
                           <FormItem>
                             <FormControl>
@@ -192,8 +186,11 @@ const CategoryEditCommand = ({
                           animationDelay: `${getRandomFloat(0.01, 0.3, 2)}s`,
                           animationDuration: `${getRandomFloat(0.2, 0.4, 2)}s`,
                         }}
-                        onClick={async () => {
-                          await onItemDeleteHandler(category.id);
+                        onClick={() => {
+                          form.setValue("toDelete", [
+                            ...form.getValues("toDelete"),
+                            category.id,
+                          ]);
                         }}
                       >
                         <Trash />

@@ -5,13 +5,13 @@ import z from "zod";
 
 import http from "@/lib/api/http.service";
 
-import { NewCategoryFormSchema as NewCategoryFormSchema } from "../category/NewCategoryForm";
-import { EditCategoriesSchema } from "../transaction/NewTransactionForm/CategoryEditCommand";
+import { NewCategoryFormSchema } from "../category/NewCategoryForm";
 import {
   Category,
   CategoryApiRes,
   CategoryApiResArray,
   CreateCategoryPayload,
+  UpdatableCategoryFields,
 } from "../types";
 import { transformCategoryRes, transformEditCategoryReq } from "../utils";
 
@@ -41,16 +41,14 @@ const createCategory = cache(
   },
 );
 
-const updateCategory = cache(
-  async (request: z.infer<typeof EditCategoriesSchema>) => {
-    const transformedRequest = transformEditCategoryReq(request);
+const updateCategory = async (request: UpdatableCategoryFields[]) => {
+  const transformedRequest = request.map(transformEditCategoryReq);
+  console.log({ transformedRequest });
+  await http.put("/api/categories", transformedRequest, z.string());
+};
 
-    await http.put("/api/categories", transformedRequest, z.null());
-  },
-);
-
-const deleteCategory = cache(async (id: string) => {
-  await http.delete(`/api/categories/${id}`, z.string());
-});
+const deleteCategory = async (id: string) => {
+  await http.delete(`/api/categories/${id}`, CategoryApiRes);
+};
 
 export { getCategories, createCategory, updateCategory, deleteCategory };

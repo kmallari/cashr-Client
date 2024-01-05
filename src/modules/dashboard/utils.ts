@@ -1,12 +1,11 @@
 import z from "zod";
 
-import { NewCategoryFormSchema } from "./category/NewCategoryForm";
-import { EditCategoriesSchema } from "./transaction/NewTransactionForm/CategoryEditCommand";
 import {
   Category,
   CategoryApiRes,
   Transaction,
   TransactionApiRes,
+  UpdatableCategoryFields,
 } from "./types";
 
 const transformCategoryRes = (
@@ -35,16 +34,13 @@ const transformTransactionRes = (
   };
 };
 
-const transformEditCategoryReq = (
-  req: z.infer<typeof EditCategoriesSchema>,
-) => {
-  console.log({ req });
-  return req.categories.map((val) => ({
-    id: val.id,
-    icon: val.icon,
-    label: val.label,
-    is_expense: val.isExpense,
-  }));
+const transformEditCategoryReq = (req: UpdatableCategoryFields) => {
+  return {
+    id: req.id,
+    icon: req.icon,
+    label: req.label,
+    is_expense: req.isExpense,
+  };
 };
 
 const getRandomFloat = (min: number, max: number, decimals: number) => {

@@ -1,13 +1,8 @@
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Check, Edit, X } from "lucide-react";
-import React, { RefObject, useMemo, useRef, useState } from "react";
-import {
-  ControllerRenderProps,
-  FieldValues,
-  Path,
-  UseFormReturn,
-} from "react-hook-form";
-import z, { ZodIntersection } from "zod";
+import React, { FC, RefObject, useMemo, useRef, useState } from "react";
+import { UseFormReturn, useFormContext } from "react-hook-form";
+import z from "zod";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,32 +22,24 @@ import {
 } from "@/modules/dashboard/actions/category";
 import CategoryFilters from "@/modules/dashboard/category/Filters";
 import NewCategoryForm from "@/modules/dashboard/category/NewCategoryForm";
-import { Category } from "@/modules/dashboard/types";
+import { Category, UpdatableCategoryFields } from "@/modules/dashboard/types";
 
 import CategoryEditCommand, {
   EditCategoriesSchema,
 } from "./CategoryEditCommand";
 import CategorySelectCommand from "./CategorySelectCommand";
-import { transformEditCategoryReq } from "../../utils";
 
-type CategoryComboboxProps<
-  TSchema extends FieldValues,
-  TField extends Path<TSchema>,
-> = {
+type CategoryComboboxProps = {
   categories: Category[];
-  field: ControllerRenderProps<TSchema, TField>;
   buttonRef: RefObject<HTMLButtonElement>;
-  onSelectHandler: (value: string) => void;
   isError: boolean;
 };
 
-const CategoryCombobox = <T extends FieldValues, K extends Path<T>>({
+const CategoryCombobox: FC<CategoryComboboxProps> = ({
   categories: categoriesFromApi,
-  field,
   buttonRef,
-  onSelectHandler,
   isError,
-}: CategoryComboboxProps<T, K>) => {
+}) => {
   const [categories, setCategories] = useState<Category[]>(categoriesFromApi);
 
   const [incomeFilter, setIncomeFilter] = useState(true);
@@ -71,7 +58,6 @@ const CategoryCombobox = <T extends FieldValues, K extends Path<T>>({
   };
 
   const onDeleteHandler = async (id: string) => {
-    // TODO: Shit not working ?
     setCategories((cat) => cat.filter((c) => c.id != id));
     await deleteCategory(id);
   };
@@ -81,33 +67,64 @@ const CategoryCombobox = <T extends FieldValues, K extends Path<T>>({
     form: UseFormReturn<z.infer<typeof EditCategoriesSchema>>,
   ) => {
     const { dirtyFields } = form.formState;
-    const cleanedDirtyFields =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getDirtyFields(data, dirtyFields).categories as Record<string, any>;
-    const payload: {
-      icon: string;
-      label: string;
-      isExpense: boolean;
-      id: string;
-    }[] = [];
 
-    for (const key in cleanedDirtyFields) {
-      payload.push(cleanedDirtyFields[key]);
+    if (Object.keys(dirtyFields).length === 0) {
+      setEditMode(false);
+      return;
     }
 
-    await updateCategory({ categories: payload });
+    const cleanedDirtyFields =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      getDirtyFields(data, dirtyFields).toUpdate as Record<string, any>;
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(payload, null, 2)}</code>
-        </pre>
-      ),
-    });
+    console.log({ cleanedDirtyFields });
+    return;
+
+    const payload: UpdatableCategoryFields[] = [];
+    const categoriesToUpdate: Record<
+      string,
+      Omit<UpdatableCategoryFields, "id">
+    > = {};
+
+    for (const key in cleanedDirtyFields) {
+      const c = cleanedDirtyFields[key];
+      payload.push(c);
+      categoriesToUpdate[c["id"]] = {
+        icon: c.icon,
+        label: c.label,
+        isExpense: c.isExpense,
+      };
+    }
+
+    // await updateCategory(payload);
+
+    const tempCategories = categories;
+
+    for (let i = 0; i < tempCategories.length; i++) {
+      const category = tempCategories[i];
+      if (Object.keys(categoriesToUpdate).includes(category.id)) {
+        if (categoriesToUpdate[category.id].icon !== undefined) {
+          category["icon"] = categoriesToUpdate[category.id].icon as string;
+        }
+        if (categoriesToUpdate[category.id].label !== undefined) {
+          category["label"] = categoriesToUpdate[category.id].label as string;
+        }
+        if (categoriesToUpdate[category.id].isExpense !== undefined) {
+          category["isExpense"] = categoriesToUpdate[category.id]
+            .isExpense as boolean;
+        }
+      }
+      tempCategories[i] = category;
+    }
+
+    setCategories(tempCategories);
+    setEditMode(false);
   };
 
   const editFormRef = useRef<HTMLFormElement>(null);
+
+  const form = useFormContext();
+  const selectedField = form.getValues("categoryId");
 
   return (
     <FormControl>
@@ -122,17 +139,17 @@ const CategoryCombobox = <T extends FieldValues, K extends Path<T>>({
             role="combobox"
             className={cn(
               "w-full justify-between pl-2",
-              !field.value && "text-muted-foreground",
-              categories.find((category) => category.id === field.value)
+              !selectedField && "text-muted-foreground",
+              categories.find((category) => category.id === selectedField)
                 ?.isExpense === false && "border-emerald-600",
             )}
             isError={isError}
             ref={buttonRef}
           >
-            {field.value
+            {selectedField
               ? (() => {
                   const selected = categories.find(
-                    (category) => category.id === field.value,
+                    (category) => category.id === selectedField,
                   );
                   if (!selected) return null;
                   return (
@@ -160,11 +177,7 @@ const CategoryCombobox = <T extends FieldValues, K extends Path<T>>({
               editFormRef={editFormRef}
             />
           ) : (
-            <CategorySelectCommand
-              categories={filteredCategories}
-              field={field}
-              onItemSelectHandler={onSelectHandler}
-            />
+            <CategorySelectCommand categories={filteredCategories} />
           )}
           <Separator />
           <div className="flex flex-row items-center justify-between px-3 py-2">

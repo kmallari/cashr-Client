@@ -22,6 +22,10 @@ export type Category = {
   updatedAt: number;
 };
 
+export type UpdatableCategoryFields = Partial<
+  Omit<Category, "id" | "userId" | "createdAt" | "updatedAt">
+> & { id: string };
+
 export const TransactionApiRes = z.object({
   id: z.string().length(36),
   date: z.number().min(1),

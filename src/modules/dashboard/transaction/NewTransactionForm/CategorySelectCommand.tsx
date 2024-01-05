@@ -1,6 +1,6 @@
 import { CheckIcon } from "lucide-react";
-import React from "react";
-import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
+import React, { type FC } from "react";
+import { useFormContext } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,20 +15,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/tw-merge";
 import { Category } from "@/modules/dashboard/types";
 
-type CategoryCommandProps<
-  TSchema extends FieldValues,
-  TField extends Path<TSchema>,
-> = {
+type CategoryCommandProps = {
   categories: Category[];
-  field: ControllerRenderProps<TSchema, TField>;
-  onItemSelectHandler: (value: string) => void;
 };
 
-const CategoryCommand = <T extends FieldValues, K extends Path<T>>({
-  categories,
-  field,
-  onItemSelectHandler,
-}: CategoryCommandProps<T, K>) => {
+const CategoryCommand: FC<CategoryCommandProps> = ({ categories }) => {
+  const form = useFormContext();
+  const selectedCategory = form.getValues("categoryId");
   return (
     <Command
       filter={(value, search) => {
@@ -45,7 +38,12 @@ const CategoryCommand = <T extends FieldValues, K extends Path<T>>({
               <CommandItem
                 key={category.id}
                 value={JSON.stringify(category)}
-                onSelect={(val) => onItemSelectHandler(JSON.parse(val).id)}
+                onSelect={(val) => {
+                  const id = JSON.parse(val).id;
+                  form.setValue("categoryId", id);
+                  form.clearErrors("categoryId");
+                  setTimeout(() => form.setFocus("description"), 0);
+                }}
                 className="flex w-full cursor-pointer flex-row items-center px-2 py-1"
               >
                 <Badge
@@ -58,14 +56,17 @@ const CategoryCommand = <T extends FieldValues, K extends Path<T>>({
                 <CheckIcon
                   className={cn(
                     "ml-auto h-4 w-4 rounded-full bg-stone-900 p-[2px]",
-                    category.id === field.value ? "opacity-100" : "opacity-0",
+                    category.id === selectedCategory
+                      ? "opacity-100"
+                      : "opacity-0",
                   )}
                   color="white"
                 />
                 <Badge
                   className={cn(
                     "ml-2",
-                    !category.isExpense && "border-emerald-500",
+                    !category.isExpense &&
+                      "border-emerald-500 bg-emerald-50 dark:bg-emerald-950",
                   )}
                   variant={"outline"}
                 >
